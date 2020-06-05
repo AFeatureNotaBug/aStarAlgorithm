@@ -5,13 +5,6 @@ import pygame, time, sys
 
 start = time.time()
 
-nodeCount = 500
-nodes = [[i, randint(10, 490), randint(10, 490), randint(0, nodeCount), randint(0, nodeCount), randint(0, nodeCount)] for i in range(0, nodeCount)]
-
-
-startNode, endNode, allNodes = sort_nodes(str(randint(0, nodeCount)), str(randint(0, nodeCount)), nodes)
-
-
 try:
     path = aStar(startNode, endNode)
 

@@ -6,9 +6,9 @@ def aStar(startNode, endNode):
     return expand(startNode, endNode, [startNode])
 
 
+# Priority queue, lower fCost = higher priority
 def priority_queue(endNode, openNodes, closed):
-    #Function for queueing, lower cost means higher priority
-    lowest = False
+    lowest = None
 
     for openNode in openNodes:
         if lowest:
