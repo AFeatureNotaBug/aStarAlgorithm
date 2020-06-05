@@ -3,6 +3,14 @@ from random import choice
 
 
 class Map():
+    def __init__(self, gridSize):
+        self.gridSize = gridSize
+        
+        self.startNode = None
+        self.endNode = None
+        self.nodeList = None
+
+
     class Node():
         def __init__(self, x, y):
             """
@@ -17,14 +25,6 @@ class Map():
             
             self.Parent = None
             self.Neighbours = set()
-    
-    
-    def __init__(self, gridSize):
-        self.gridSize = gridSize
-        
-        self.startNode = None
-        self.endNode = None
-        self.nodeList = None
 
 
     def randomMap(self, nodeCount, maxNeighbours = 5):
@@ -32,8 +32,18 @@ class Map():
         self.endNode   = self.Node(r(10, self.gridSize - 10), r(10, self.gridSize - 10))
         self.nodeList  = [self.Node(r(10, self.gridSize - 10), r(10, self.gridSize) - 10) for i in range(0, nodeCount - 2)]
 
+        for i in range(0, maxNeighbours):
+            startNeighbour = choice(self.nodeList)
+            endNeighbour = choice(self.nodeList)
+            
+            self.startNode.Neighbours.add(startNeighbour)
+            startNeighbour.Neighbours.add(self.startNode)
+            
+            self.endNode.Neighbours.add(endNeighbour)
+            endNeighbour.Neighbours.add(self.endNode)
+            
         for current in self.nodeList:
-            for i in range(0, r(0, maxNeighbours)):
+            for i in range(0, maxNeighbours):
                 neighbour = choice(self.nodeList)
                 
                 neighbour.Neighbours.add(current)
