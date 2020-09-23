@@ -1,4 +1,2 @@
-A.pyc
-defineNodes.pyc
-NodeCreation.pyc
+*.pyc
 __pycache__
