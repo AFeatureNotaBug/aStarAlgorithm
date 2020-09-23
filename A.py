@@ -2,8 +2,9 @@ from math import sqrt
 
 class aStar():
     def __init__(self, mapObject):
-        self.Map = mapObject
-        self.open, self.closed = [mapObject.startNode], []
+        self.Map = mapObject    # Map object
+        self.open, self.closed = [mapObject.startNode], []  # Open/Closed nodes
+        self.path = []  # Shortest path through nodes
         
         try:
             self.expand(mapObject.startNode)
@@ -12,22 +13,21 @@ class aStar():
             print("No route found.")
     
     
-    # Opens/Closes nodes, expands neighbours
+    # Opens or closes nodes, expands neighbours
     def expand(self, currentNode):
-        if currentNode == self.Map.endNode:
+        if currentNode == self.Map.endNode: # If endNode reached
             print("Route found.")
-            print(self.Map.endNode.Parent)
             return self.showRoute(currentNode)
-            
+        
+        
         self.closed.append(currentNode)
         self.open.remove(currentNode)
         
+        # Open and update costs of neighbour nodes
         for neighbour in currentNode.Neighbours:
             if neighbour not in self.closed:
                 self.open.append(neighbour)
-                
-                self.updateCosts(currentNode, neighbour)
-        
+                neighbour.updateCosts(currentNode, self.Map.endNode)
         
         return self.priorityQueue()
 
@@ -47,17 +47,14 @@ class aStar():
         return self.expand(lowest)
     
     
-    def updateCosts(self, current, neighbour):
-        neighbour.gCost = sqrt(((current.X - neighbour.X) ** 2) + ((current.Y - neighbour.Y) ** 2))
-        neighbour.hCost = sqrt(((neighbour.X - self.Map.endNode.X) ** 2) + ((neighbour.Y - self.Map.endNode.Y) ** 2))
-        neighbour.fCost = neighbour.gCost + neighbour.hCost
-        neighbour.Parent = current
-
-
+    # Prints coordinates of items in a found route
     def showRoute(self, current):
         while current is not None:
-            print(current)
-            current = current.parent
+            print(current.X, current.Y)
+            
+            self.path.append(current)
+            current = current.Parent
 
         return True
+
 

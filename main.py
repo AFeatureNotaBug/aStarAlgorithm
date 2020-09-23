@@ -1,42 +1,41 @@
-from defineNodes import sort_nodes
-from random import randint
+from Map import Map
 from A import aStar
-import pygame, time, sys
 
-start = time.time()
-
-try:
-    path = aStar(startNode, endNode)
-
-    print("Time taken: " + str(time.time() - start))
-    print("Route of " + str(len(path)) + " items found.")
-
-except:
-    print("No possible routes found.")
-    sys.exit(0)
+import py as py
 
 
-ask = str(raw_input("Enter y to draw, n to quit: ")).lower()
+m = Map(500)    # Create map object (500x500)
+m.randomMap(60) # Create a random map of 60 nodes
 
-if ask == "y":
-    window = pygame.display.set_mode((500, 500))
-    pygame.display.flip()
+a = aStar(m)    # Run aStar on m
 
 
-    main = True
-    while main:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                main = False
+"""Draws the map of nodes with route"""
+window = py.display.set_mode((500, 500))
+py.display.flip()
 
-        for item in allNodes:
-            pygame.draw.rect(window, (255, 255, 255), [item.X, item.Y, 6, 6])
 
-        for item in path:
-            pygame.draw.rect(window, (0, 0, 255), [item.X, item.Y, 6, 6])
-            pygame.draw.line(window, (200, 10, 200), (item.X, item.Y), (item.parentNode.X, item.parentNode.Y))
+main = True
+while main:
+    for event in py.event.get():
+        if event.type == py.QUIT:
+            main = False
 
-        pygame.draw.rect(window, (255, 0, 0), [startNode.X, startNode.Y, 6, 6])
-        pygame.draw.rect(window, (0, 255, 0), [endNode.X, endNode.Y, 6, 6])
+    # Draw each Node as a white square
+    for item in m.nodeList:
+        py.draw.rect(window, (255, 255, 255), [item.X, item.Y, 6, 6])
 
-        pygame.display.update()
+    # Draw each Node in path as blue square, purple lines between path Nodes
+    curr = m.endNode
+    while curr.Parent:
+        par = curr.Parent
+        
+        py.draw.rect(window, (0, 0, 255), [curr.X, curr.Y, 6, 6])
+        py.draw.line(window, (200, 10, 200), (curr.X, curr.Y), (par.X, par.Y))
+        curr = curr.Parent
+
+    # Draw start and end nodes
+    py.draw.rect(window, (255, 0, 0), [m.startNode.X, m.startNode.Y, 6, 6])
+    py.draw.rect(window, (0, 255, 0), [m.endNode.X, m.endNode.Y, 6, 6])
+
+    py.display.update()
