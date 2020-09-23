@@ -1,4 +1,6 @@
 from math import sqrt
+import time
+
 
 class aStar():
     def __init__(self, mapObject):
@@ -6,9 +8,11 @@ class aStar():
         self.open, self.closed = [mapObject.startNode], []  # Open/Closed nodes
         self.path = []  # Shortest path through nodes
         
+        self.startTime = time.time()    # Used to time the algorithm
+        
+        
         try:
             self.expand(mapObject.startNode)
-            
         except:
             print("No route found.")
     
@@ -16,7 +20,7 @@ class aStar():
     # Opens or closes nodes, expands neighbours
     def expand(self, currentNode):
         if currentNode == self.Map.endNode: # If endNode reached
-            print("Route found.")
+            print("Route found in " + str(time.time() - self.startTime))
             return self.showRoute(currentNode)
         
         

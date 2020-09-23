@@ -1,17 +1,24 @@
 from Map import Map
 from A import aStar
 
-import py as py
+import pygame as py
 
 
-m = Map(500)    # Create map object (500x500)
-m.randomMap(60) # Create a random map of 60 nodes
+### Varibles ########
+mapSize = 500       #
+nodeCount = 60      #
+neighbourCount = 5  #
+#####################
+
+
+m = Map(mapSize)    # Create map object (mapSize X mapSize)
+m.randomMap(nodeCount, neighbourCount) # Create random map of nodes
 
 a = aStar(m)    # Run aStar on m
 
 
-"""Draws the map of nodes with route"""
-window = py.display.set_mode((500, 500))
+"""Uncomment to draw the map of nodes with route"""
+"""window = py.display.set_mode((500, 500))
 py.display.flip()
 
 
@@ -38,4 +45,4 @@ while main:
     py.draw.rect(window, (255, 0, 0), [m.startNode.X, m.startNode.Y, 6, 6])
     py.draw.rect(window, (0, 255, 0), [m.endNode.X, m.endNode.Y, 6, 6])
 
-    py.display.update()
+    py.display.update()"""
