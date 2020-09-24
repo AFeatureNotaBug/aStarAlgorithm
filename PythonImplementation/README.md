@@ -1,4 +1,4 @@
-# aStarPython
+# A* Python
 Simple A* Algorithm written in Python. Works in both Python2.7 and Python3.6.
 
 More utilities in order to create meaningful maps to come.
