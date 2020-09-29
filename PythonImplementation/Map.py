@@ -1,6 +1,7 @@
 from random import randint as r
 from random import choice
 from math import sqrt
+import numpy as np
 
 
 # Map object consisting of a set of Nodes
@@ -10,12 +11,14 @@ class Map():
         
         self.startNode = None
         self.endNode = None
-        self.nodeList = None
+        
+        self.nodeList = []
+        self.allCoords = []
 
 
     # Node object
     class Node():
-        def __init__(self, x, y):
+        def __init__(self, coordinates):
             """
              # X, Y   - X and Y coordinates
              # gCost  - Distance to previous neighbour
@@ -23,7 +26,7 @@ class Map():
              # fCost  - gCost + hCost
              # Parent - Previous node in shortest route
             """
-            self.X, self.Y = x, y
+            self.Coords = coordinates   #numpy array
             self.gCost, self.hCost, self.fCost = 0, 0, 0
             
             self.Parent = None
@@ -32,9 +35,9 @@ class Map():
         
         # Updates gCost, hCost, and fCost
         def updateCosts(self, prevNode, endNode):
-            self.gCost = sqrt(((prevNode.X - self.X) ** 2) + ((prevNode.Y - self.Y) ** 2))
+            self.gCost = sqrt(((prevNode.Coords[0] - self.Coords[0]) ** 2) + ((prevNode.Coords[1] - self.Coords[1]) ** 2))
             
-            self.hCost = sqrt(((self.X - endNode.X) ** 2) + ((self.Y - endNode.Y) ** 2))
+            self.hCost = sqrt(((self.Coords[0] - endNode.Coords[0]) ** 2) + ((self.Coords[1] - endNode.Coords[1]) ** 2))
             
             self.fCost = self.gCost + self.hCost
             self.Parent = prevNode
@@ -42,12 +45,15 @@ class Map():
 
     # Generates map with nodeCount nodes with maxNeighbours neighbours each
     def randomMap(self, nodeCount, maxNeighbours = 5):
-        self.startNode = self.Node(r(10, self.gridSize - 10), r(10, self.gridSize - 10))    # Generate start node
-        self.endNode   = self.Node(r(10, self.gridSize - 10), r(10, self.gridSize - 10))    # Generate end node
+        self.startNode = self.Node(np.array([r(10, self.gridSize - 10), r(10, self.gridSize - 10)]))    # Generate start node
+        self.endNode   = self.Node(np.array([r(10, self.gridSize - 10), r(10, self.gridSize - 10)]))    # Generate end node
+
+        for i in range(0, nodeCount - 2):
+            newPoint = self.Node(np.array([r(10, self.gridSize - 10), r(10, self.gridSize - 10)]))
+            
+            self.nodeList.append(newPoint)
+            self.allCoords.append(newPoint.Coords)
         
-        self.nodeList  = [self.Node(r(10, self.gridSize - 10), r(10, self.gridSize) - 10) for i in range(0, nodeCount - 2)] # Generate remaining nodes and store in self.nodeList
-
-
         # Add neighbours to start and end nodes
         for i in range(0, maxNeighbours):
             startNeighbour = choice(self.nodeList)

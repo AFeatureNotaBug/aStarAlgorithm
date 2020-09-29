@@ -9,6 +9,7 @@ class aStar():
         self.path = []  # Shortest path through nodes
         
         self.startTime = time.time()    # Used to time the algorithm
+        self.timeTaken = None           # Total time taken by the algorithm
         
         
         try:
@@ -20,7 +21,9 @@ class aStar():
     # Opens or closes nodes, expands neighbours
     def expand(self, currentNode):
         if currentNode == self.Map.endNode: # If endNode reached
-            print("Route found in " + str(time.time() - self.startTime))
+            self.timeTaken = str(time.time() - self.startTime)
+            print("Route found in " + str(self.timeTaken))
+            
             return self.showRoute(currentNode)
         
         
@@ -54,9 +57,9 @@ class aStar():
     # Prints coordinates of items in a found route
     def showRoute(self, current):
         while current is not None:
-            print(current.X, current.Y)
+            print(current.Coords)
             
-            self.path.append(current)
+            self.path.append(current.Coords)
             current = current.Parent
 
         return True
