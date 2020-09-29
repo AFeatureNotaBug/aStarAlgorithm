@@ -20,7 +20,7 @@ class Map():
     class Node():
         def __init__(self, coordinates):
             """
-             # X, Y   - X and Y coordinates
+             # Coords - X, Y(, Z) coordinates
              # gCost  - Distance to previous neighbour
              # hCost  - Distance to endNode
              # fCost  - gCost + hCost
@@ -44,11 +44,11 @@ class Map():
 
     # Generates map with nodeCount nodes with maxNeighbours neighbours each
     def randomMap(self, nodeCount, maxNeighbours = 5):
-        self.startNode = self.Node(np.array([r(10, self.gridSize - 10), r(10, self.gridSize - 10)]))    # Generate start node
-        self.endNode   = self.Node(np.array([r(10, self.gridSize - 10), r(10, self.gridSize - 10)]))    # Generate end node
+        self.startNode = self.Node(np.random.randint(10, self.gridSize - 10, (3)))
+        self.endNode = self.Node(np.random.randint(10, self.gridSize - 10, (3)))
 
         for i in range(0, nodeCount - 2):
-            newPoint = self.Node(np.array([r(10, self.gridSize - 10), r(10, self.gridSize - 10)]))
+            newPoint = self.Node(np.random.randint(10, self.gridSize - 10, (3)))
             
             self.nodeList.append(newPoint)
             self.allCoords.append(newPoint.Coords)
@@ -77,12 +77,12 @@ class Map():
     def __str__(self):
         retStr = ""
         
-        retStr += "Start: " + str(self.startNode.X) + ", " + str(self.endNode.Y) + "\n"
+        retStr += "Start: " + str(self.startNode.Coords) + "\n"
         
         for node in self.nodeList:
-            retStr += str(node.X) + ", " + str(node.Y) + "\n"
+            retStr += str(node.Coords) + "\n"
             
-        retStr += "End: " + str(self.endNode.X) + ", " + str(self.endNode.Y)
+        retStr += "End: " + str(self.endNode.Coords)
         
         return retStr
 

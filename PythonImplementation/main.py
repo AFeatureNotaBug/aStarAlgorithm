@@ -20,15 +20,15 @@ a = aStar(m)    # Run aStar on m
 
 
 fig = plt.figure()
-ax = fig.add_subplot(1, 1, 1)
+ax = fig.add_subplot(111, projection = '3d')
 
 path = np.array(a.path)
 allPoints = np.array(m.allCoords)
 
-ax.scatter(allPoints[:, 0], allPoints[:, 1], color = 'red')
-ax.scatter(path[:, 0], path[:, 1])
+ax.scatter(allPoints[:, 0], allPoints[:, 1], allPoints[:, 2], color = 'red')
+ax.scatter(path[:, 0], path[:, 1], path[:, 2])
 
-ax.plot(path[:, 0], path[:, 1], color = 'green')
+ax.plot(path[:, 0], path[:, 1], path[:, 2], color = 'green')
 
 ax.set_xlabel("Time taken: " + str(a.timeTaken))
 plt.show()
