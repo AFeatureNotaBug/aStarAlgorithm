@@ -35,11 +35,10 @@ class Map():
         
         # Updates gCost, hCost, and fCost
         def updateCosts(self, prevNode, endNode):
-            self.gCost = sqrt(((prevNode.Coords[0] - self.Coords[0]) ** 2) + ((prevNode.Coords[1] - self.Coords[1]) ** 2))
-            
-            self.hCost = sqrt(((self.Coords[0] - endNode.Coords[0]) ** 2) + ((self.Coords[1] - endNode.Coords[1]) ** 2))
-            
+            self.gCost = sqrt(np.sum((prevNode.Coords - self.Coords) ** 2))
+            self.hCost = sqrt(np.sum((self.Coords - endNode.Coords) ** 2))
             self.fCost = self.gCost + self.hCost
+            
             self.Parent = prevNode
 
 
