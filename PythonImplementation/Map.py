@@ -13,7 +13,6 @@ class Map():
         self.endNode = None
         
         self.nodeList = []
-        self.allCoords = []
 
 
     # Node object
@@ -43,16 +42,17 @@ class Map():
             self.Parent = prevNode
 
 
-    # Generates map with nodeCount nodes with maxNeighbours neighbours each
+    """Generates map with nodeCount nodes with maxNeighbours neighbours each"""
     def randomMap(self, nodeCount, maxNeighbours = 5):
         self.startNode = self.Node(np.random.randint(10, self.gridSize - 10, (3)))
+        self.startNode.Open = 0
+        
         self.endNode = self.Node(np.random.randint(10, self.gridSize - 10, (3)))
 
         for i in range(0, nodeCount - 2):
             newPoint = self.Node(np.random.randint(10, self.gridSize - 10, (3)))
             
             self.nodeList.append(newPoint)
-            self.allCoords.append(newPoint.Coords)
         
         # Add neighbours to start and end nodes
         for i in range(0, maxNeighbours):

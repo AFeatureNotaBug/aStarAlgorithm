@@ -14,10 +14,14 @@ class pQueue():
     
     #Return highest priority node in queue
     def get(self):
-        retNode = self.head
-        self.head = self.head.next
+        if self.head:
+            retNode = self.head
+            self.head = self.head.next
         
-        return retNode.node
+            return retNode.node
+            
+        else:
+            return None
     
     
     #Insert new node into queue
