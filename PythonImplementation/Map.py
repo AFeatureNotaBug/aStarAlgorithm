@@ -21,24 +21,25 @@ class Map():
         def __init__(self, coordinates):
             """
              # Coords - X, Y(, Z) coordinates
-             # gCost  - Distance to previous neighbour
-             # hCost  - Distance to endNode
+             # Open   - Whether or not the node is open for visiting (Closed once assessed)
              # fCost  - gCost + hCost
+                            + gCost = Distance to previous neighbour
+                            + hCost = Distance to endNode 
              # Parent - Previous node in shortest route
             """
             self.Coords = coordinates   #numpy array
-            self.gCost, self.hCost, self.fCost = 0, 0, 0
-            
+            self.Open = 1
+            self.fCost = 0
             self.Parent = None
             self.Neighbours = set()
         
         
         # Updates gCost, hCost, and fCost
         def updateCosts(self, prevNode, endNode):
-            self.gCost = sqrt(np.sum((prevNode.Coords - self.Coords) ** 2))
-            self.hCost = sqrt(np.sum((self.Coords - endNode.Coords) ** 2))
-            self.fCost = self.gCost + self.hCost
+            gCost = sqrt(np.sum((prevNode.Coords - self.Coords) ** 2))
+            hCost = sqrt(np.sum((self.Coords - endNode.Coords) ** 2))
             
+            self.fCost = gCost + hCost
             self.Parent = prevNode
 
 

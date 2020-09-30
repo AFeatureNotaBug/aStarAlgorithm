@@ -1,21 +1,19 @@
 from math import sqrt
+from pQueue import pQueue
 import time
 
 
 class aStar():
     def __init__(self, mapObject):
         self.Map = mapObject    # Map object
-        self.open, self.closed = [mapObject.startNode], []  # Open/Closed nodes
+        self.priorityQueue = pQueue()   #Priority queue of nodes
         self.path = []  # Shortest path through nodes
         
         self.startTime = time.time()    # Used to time the algorithm
         self.timeTaken = None           # Total time taken by the algorithm
         
         
-        try:
-            self.expand(mapObject.startNode)
-        except:
-            print("No route found.")
+        self.expand(mapObject.startNode)
     
     
     # Opens or closes nodes, expands neighbours
@@ -27,33 +25,17 @@ class aStar():
             return self.showRoute(currentNode)
         
         
-        self.closed.append(currentNode)
-        self.open.remove(currentNode)
+        currentNode.Open = 0
         
-        # Open and update costs of neighbour nodes
+        # Update cost of neighbour nodes and add to priority queue if open
         for neighbour in currentNode.Neighbours:
-            if neighbour not in self.closed:
-                self.open.append(neighbour)
+            if neighbour.Open:
                 neighbour.updateCosts(currentNode, self.Map.endNode)
+                self.priorityQueue.insert(neighbour)
         
-        return self.priorityQueue()
+        return self.expand(self.priorityQueue.get())
 
 
-    # Priority queue, lower fCost means higher priority
-    def priorityQueue(self):
-        lowest = None
-        
-        for openNode in self.open:
-            if not lowest:
-                lowest = openNode
-                
-            else:
-                if openNode.fCost < lowest.fCost:
-                    lowest = openNode
-        
-        return self.expand(lowest)
-    
-    
     # Prints coordinates of items in a found route
     def showRoute(self, current):
         while current is not None:
