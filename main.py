@@ -1,5 +1,5 @@
 from Map import Map
-import sys
+import sys, os
 
 
 allMaps = dict()    # Stores all open maps in a current session
@@ -22,18 +22,42 @@ while True:
     
     #Load
     if ask == "load":
-        askFilename = input("Enter map name: ")
-        askStorageName = input("Enter name to store map under: ")
+        print("\nMaps directory:\n", os.listdir("Maps"), "\n")
         
-        allMaps[askStorageName] = Map.load(askFilename)
+        askFilename = input("Enter map name: ")
+        
+        try:
+            loadMap = Map.load(askFilename)
+            
+            askStorageName = input("Enter name to store map under: ")
+            allMaps[askStorageName] = Map.load(askFilename)
+            
+        except:
+            print("No map with given filename")
+            
         print("\n")
         
     #Save
     if ask == "save":
-        askMapName = input("Enter name of map in current session: ")
-        askFilename = input("Enter filename name: ")
+        mapNames = [mapName for mapName in allMaps]
         
-        Map.save(allMaps[askMapName], askFilename)
+        askMapName = input("Enter name of map in current session: ")
+        
+        if askMapName in mapNames:
+            askFilename = input("Enter filename name: ")
+            
+            if askFilename + ".map" in os.listdir("Maps"):
+                askOverwrite = input("This will overwrite an existing map. Continue? (yes/no)").lower()
+                
+                if askOverwrite == "yes":
+                    Map.save(allMaps[askMapName], askFilename)
+                    
+            else:
+                Map.save(allMaps[askMapName], askFilename)
+        
+        else:
+            print("No map with the given name exists")
+        
         print("\n")
     
     #Random map
@@ -52,10 +76,7 @@ while True:
     
     #List
     if ask == "list":
-        for mapName in allMaps:
-            print(mapName)
-            
-        print("\n")
+        print([mapName for mapName in allMaps], "\n")
     
     #A*
     if ask == 'a':
