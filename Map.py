@@ -89,26 +89,20 @@ class Map():
                 currentNode.Neighbours.add(neighbour)
 
 
-    def saveMap(mapObj, filename):
+    def save(mapObj, filename):
         """Save map with given filename"""
         saveFile = open("Maps/" + filename + ".map", 'wb')
-        pickle.dump(self, saveFile, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(mapObj, saveFile, pickle.HIGHEST_PROTOCOL)
         saveFile.close()
 
 
-    def loadMap(filename):
+    def load(filename):
         """Load map with given filename"""
-        loadFile = open("Maps/" + filename + ".map", 'rb')
+        loadFile = open("Maps/" + filename, 'rb')
         mapObj = pickle.load(loadFile)
         loadFile.close()
         
         return mapObj
-
-
-    def showRoute(self):
-        """Print all Node objects in shortest path"""
-        for coord in self.path:
-            print(coord)
 
 
     def __str__(self):
@@ -133,6 +127,7 @@ class Map():
         try:
             endTime = self.expand(self.startNode)
             print("Route found in " + str(endTime - startTime) + "\n")
+            self.showRoute()
             
             return
             
@@ -164,3 +159,9 @@ class Map():
                     
             
             return self.expand(self.prioQ.get())
+
+
+    def showRoute(self):
+        """Print all Node objects in shortest path"""
+        for coord in self.path:
+            print(coord)
