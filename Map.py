@@ -1,18 +1,34 @@
 from random import randint as r
 from random import choice
 from math import sqrt
+
 import numpy as np
+import pickle
+import time
+
+from pQueue import pQueue
 
 
 # Map object consisting of a set of Nodes
 class Map():
     def __init__(self, gridSize):
+        """
+         # gridSize  - Size of the map
+         # startNode - Starting node in map traversal
+         # endNode   - Ending node in map traversal
+         # nodeList  - List of all Node objects in map
+         # path      - List of all Node objects in shortest path
+         # prioQ     - Priority queue used by aStar
+        """
         self.gridSize = gridSize
         
         self.startNode = None
         self.endNode = None
         
         self.nodeList = []
+        self.path = None
+        
+        self.prioQ = pQueue()
 
 
     # Node object
@@ -35,23 +51,23 @@ class Map():
         
         # Updates gCost, hCost, and fCost
         def updateCosts(self, prevNode, endNode):
-            gCost = sqrt(np.sum((prevNode.Coords - self.Coords) ** 2))
-            hCost = sqrt(np.sum((self.Coords - endNode.Coords) ** 2))
+            gCost = np.linalg.norm(prevNode.Coords - self.Coords, 2)
+            hCost = np.linalg.norm(self.Coords - endNode.Coords, 2)
             
             self.fCost = gCost + hCost
             self.Parent = prevNode
 
 
-    """Generates map with nodeCount nodes with maxNeighbours neighbours each"""
     def randomMap(self, nodeCount, maxNeighbours = 5):
+        """Generates map with nodeCount nodes with maxNeighbours neighbours each"""
         self.startNode = self.Node(np.random.randint(10, self.gridSize - 10, (3)))
         self.startNode.Open = 0
         
         self.endNode = self.Node(np.random.randint(10, self.gridSize - 10, (3)))
 
         for i in range(0, nodeCount - 2):
-            newPoint = self.Node(np.random.randint(10, self.gridSize - 10, (3)))
-            self.nodeList.append(newPoint)
+            newNode = self.Node(np.random.randint(10, self.gridSize - 10, (3)))
+            self.nodeList.append(newNode)
         
         # Add neighbours to start and end nodes
         for i in range(0, maxNeighbours):
@@ -73,8 +89,30 @@ class Map():
                 currentNode.Neighbours.add(neighbour)
 
 
-    # Prints coordinates of each node on a newline clearly showing start and end
+    def saveMap(mapObj, filename):
+        """Save map with given filename"""
+        saveFile = open("Maps/" + filename + ".map", 'wb')
+        pickle.dump(self, saveFile, pickle.HIGHEST_PROTOCOL)
+        saveFile.close()
+
+
+    def loadMap(filename):
+        """Load map with given filename"""
+        loadFile = open("Maps/" + filename + ".map", 'rb')
+        mapObj = pickle.load(loadFile)
+        loadFile.close()
+        
+        return mapObj
+
+
+    def showRoute(self):
+        """Print all Node objects in shortest path"""
+        for coord in self.path:
+            print(coord)
+
+
     def __str__(self):
+        """Prints coordinates of each node on a newline clearly showing start and end"""
         retStr = ""
         
         retStr += "Start: " + str(self.startNode.Coords) + "\n"
@@ -87,3 +125,42 @@ class Map():
         return retStr
 
 
+    def aStar(self):
+        """Manages execution of the aStar algorithm, see expand function"""
+        self.prioQ.clear()         # Clear prio queue from previous usage
+        startTime = time.time()    # Used to time the algorithm
+        
+        try:
+            endTime = self.expand(self.startNode)
+            print("Route found in " + str(endTime - startTime) + "\n")
+            
+            return
+            
+        except:
+            print("No route found")
+
+
+    def expand(self, currentNode):
+        """Opens/closes nodes, expands neighbours"""
+        if currentNode == self.endNode: # If endNode reached
+            endTime = time.time()
+            p = []
+            
+            while currentNode is not None:
+                p.append(currentNode.Coords)
+                currentNode = currentNode.Parent
+            
+            self.path = np.array(p[::-1])
+            
+            return endTime
+            
+        else:
+            # Update cost of neighbour nodes and add to priority queue if open
+            for neighbour in currentNode.Neighbours:
+                if neighbour.Open:
+                    neighbour.Open = 0
+                    neighbour.updateCosts(currentNode, self.endNode)
+                    self.prioQ.insert(neighbour)
+                    
+            
+            return self.expand(self.prioQ.get())

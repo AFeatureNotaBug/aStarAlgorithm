@@ -55,5 +55,9 @@ class pQueue():
                 newNode.next = current
                 
                 current.prev = newNode
-
-
+    
+    
+    #Clear queue
+    def clear(self):
+        self.head = None
+        self.tail = None
